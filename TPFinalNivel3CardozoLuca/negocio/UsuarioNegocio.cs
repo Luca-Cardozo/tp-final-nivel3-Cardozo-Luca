@@ -14,6 +14,7 @@ namespace negocio
         {
             Usuario usuario = null;
             AccesoDatos datos = new AccesoDatos();
+            FavoritoNegocio favoritoNegocio = new FavoritoNegocio();
 
             try
             {
@@ -34,6 +35,7 @@ namespace negocio
                     usuario.Apellido = datos.Lector["apellido"] is DBNull ? null : datos.Lector["apellido"].ToString();
                     usuario.Imagen = datos.Lector["urlImagenPerfil"] is DBNull ? null : datos.Lector["urlImagenPerfil"].ToString();
                     usuario.Admin = (bool)datos.Lector["admin"];
+                    usuario.Favoritos = favoritoNegocio.listarFavoritos(usuario.Id);
                 }
                 return usuario;
             }
