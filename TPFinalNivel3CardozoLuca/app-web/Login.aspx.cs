@@ -1,4 +1,6 @@
-﻿using System;
+﻿using dominio;
+using negocio;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,5 +15,35 @@ namespace app_web
         {
 
         }
+
+        protected void btnVolverHome_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("Home.aspx", false);
+        }
+
+        protected void btnLogin_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                UsuarioNegocio negocio = new UsuarioNegocio();
+
+                Usuario usuario = negocio.login(txtEmail.Text, txtPassword.Text);
+
+                if (usuario != null)
+                {
+                    Session["usuario"] = usuario;
+                    Response.Redirect("Home.aspx");
+                }
+                else
+                {
+                    lblError.Text = "Email o contraseña incorrectos";
+                }
+            }
+            catch (Exception ex)
+            {
+                Session.Add("error", ex.ToString());
+            }
+        }
+
     }
 }
