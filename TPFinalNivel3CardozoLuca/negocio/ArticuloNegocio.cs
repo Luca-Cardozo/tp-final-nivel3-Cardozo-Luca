@@ -86,11 +86,23 @@ namespace negocio
 
                 datos.setearParametro("@Codigo", articuloNuevo.Codigo);
                 datos.setearParametro("@Nombre", articuloNuevo.Nombre);
-                datos.setearParametro("@Descripcion", articuloNuevo.Descripcion);
                 datos.setearParametro("@IdMarca", articuloNuevo.Marca.Id);
                 datos.setearParametro("@IdCategoria", articuloNuevo.Categoria.Id);
-                datos.setearParametro("@Imagen", articuloNuevo.Imagen);
-                datos.setearParametro("@Precio", articuloNuevo.Precio);
+
+                if (string.IsNullOrWhiteSpace(articuloNuevo.Descripcion))
+                    datos.setearParametro("@Descripcion", DBNull.Value);
+                else
+                    datos.setearParametro("@Descripcion", articuloNuevo.Descripcion);
+
+                if (string.IsNullOrWhiteSpace(articuloNuevo.Imagen))
+                    datos.setearParametro("@Imagen", DBNull.Value);
+                else
+                    datos.setearParametro("@Imagen", articuloNuevo.Imagen);
+
+                if (articuloNuevo.Precio.HasValue)
+                    datos.setearParametro("@Precio", articuloNuevo.Precio.Value);
+                else
+                    datos.setearParametro("@Precio", DBNull.Value);
 
                 datos.ejecutarAccion();
             }
@@ -124,12 +136,24 @@ namespace negocio
 
                 datos.setearParametro("@Codigo", articuloModificado.Codigo);
                 datos.setearParametro("@Nombre", articuloModificado.Nombre);
-                datos.setearParametro("@Descripcion", articuloModificado.Descripcion);
                 datos.setearParametro("@IdMarca", articuloModificado.Marca.Id);
                 datos.setearParametro("@IdCategoria", articuloModificado.Categoria.Id);
-                datos.setearParametro("@Imagen", articuloModificado.Imagen);
-                datos.setearParametro("@Precio", articuloModificado.Precio);
                 datos.setearParametro("@Id", articuloModificado.Id);
+
+                if (string.IsNullOrWhiteSpace(articuloModificado.Descripcion))
+                    datos.setearParametro("@Descripcion", DBNull.Value);
+                else
+                    datos.setearParametro("@Descripcion", articuloModificado.Descripcion);
+
+                if (string.IsNullOrWhiteSpace(articuloModificado.Imagen))
+                    datos.setearParametro("@Imagen", DBNull.Value);
+                else
+                    datos.setearParametro("@Imagen", articuloModificado.Imagen);
+
+                if (articuloModificado.Precio.HasValue)
+                    datos.setearParametro("@Precio", articuloModificado.Precio.Value);
+                else
+                    datos.setearParametro("@Precio", DBNull.Value);
 
                 datos.ejecutarAccion();
             }
