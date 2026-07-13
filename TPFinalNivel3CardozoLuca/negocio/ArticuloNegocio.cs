@@ -32,15 +32,24 @@ namespace negocio
                     aux.Id = (int)datos.Lector["Id"];
                     aux.Codigo = (string)datos.Lector["Codigo"];
                     aux.Nombre = (string)datos.Lector["Nombre"];
-                    aux.Descripcion = (string)datos.Lector["Descripcion"];
+                    if (datos.Lector["Descripcion"] is DBNull)
+                        aux.Descripcion = null;
+                    else
+                        aux.Descripcion = datos.Lector["Descripcion"].ToString();
                     aux.Marca = new Marca();
                     aux.Marca.Id = (int)datos.Lector["IdMarca"];
                     aux.Marca.Descripcion = (string)datos.Lector["Marca"];
                     aux.Categoria = new Categoria();
                     aux.Categoria.Id = (int)datos.Lector["IdCategoria"];
                     aux.Categoria.Descripcion = (string)datos.Lector["Categoria"];
-                    aux.Precio = (decimal)datos.Lector["Precio"];
-                    aux.Imagen = (string)datos.Lector["ImagenUrl"];
+                    if (datos.Lector["Precio"] is DBNull)
+                        aux.Precio = null;
+                    else
+                        aux.Precio = (decimal)datos.Lector["Precio"];
+                    if (datos.Lector["ImagenUrl"] is DBNull)
+                        aux.Imagen = null;
+                    else
+                        aux.Imagen = datos.Lector["ImagenUrl"].ToString();
                     lista.Add(aux);
                 }
                 return lista;
@@ -202,5 +211,70 @@ namespace negocio
         {
             return Regex.IsMatch(codigo, @"^[A-Za-z][0-9]{2}$");
         }
+
+        public Articulo buscarPorId(int idArticulo)
+        {
+            Articulo articulo = null;
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(
+                    "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.IdMarca, A.IdCategoria, " +
+                    "A.ImagenUrl, M.Descripcion AS Marca, C.Descripcion AS Categoria, A.Precio " +
+                    "FROM ARTICULOS A " +
+                    "INNER JOIN MARCAS M ON A.IdMarca = M.Id " +
+                    "INNER JOIN CATEGORIAS C ON A.IdCategoria = C.Id " +
+                    "WHERE A.Id = @Id"
+                );
+
+                datos.setearParametro("@Id", idArticulo);
+                datos.ejecutarLectura();
+
+                if (datos.Lector.Read())
+                {
+                    articulo = new Articulo();
+
+                    articulo.Id = (int)datos.Lector["Id"];
+                    articulo.Codigo = datos.Lector["Codigo"].ToString();
+                    articulo.Nombre = datos.Lector["Nombre"].ToString();
+
+                    if (datos.Lector["Descripcion"] is DBNull)
+                        articulo.Descripcion = null;
+                    else
+                        articulo.Descripcion = datos.Lector["Descripcion"].ToString();
+
+                    articulo.Marca = new Marca();
+                    articulo.Marca.Id = (int)datos.Lector["IdMarca"];
+                    articulo.Marca.Descripcion = datos.Lector["Marca"].ToString();
+
+                    articulo.Categoria = new Categoria();
+                    articulo.Categoria.Id = (int)datos.Lector["IdCategoria"];
+                    articulo.Categoria.Descripcion =
+                        datos.Lector["Categoria"].ToString();
+
+                    if (datos.Lector["Precio"] is DBNull)
+                        articulo.Precio = null;
+                    else
+                        articulo.Precio = (decimal)datos.Lector["Precio"];
+
+                    if (datos.Lector["ImagenUrl"] is DBNull)
+                        articulo.Imagen = null;
+                    else
+                        articulo.Imagen = datos.Lector["ImagenUrl"].ToString();
+                }
+
+                return articulo;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }

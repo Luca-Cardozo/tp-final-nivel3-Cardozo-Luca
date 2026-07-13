@@ -15,7 +15,7 @@ namespace app_web
         {
             imgAvatar.ImageUrl = "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg";
 
-            bool paginaPublica = Page is Home || Page is Login || Page is Logout || Page is RegistroUser;
+            bool paginaPublica = Page is Home || Page is Login || Page is Logout || Page is RegistroUser || Page is DetalleArticulo;
 
             Usuario usuario = Seguridad.usuarioActual(Session);
 
