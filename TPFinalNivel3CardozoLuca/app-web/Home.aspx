@@ -39,7 +39,7 @@
 
     <div class="card shadow-sm mb-4">
 
-        <div class="card-header bg-dark text-white">
+        <div class="card-header bg-dark text-white text-center">
             <h5 class="mb-0">Filtrar artículos</h5>
         </div>
 
@@ -111,7 +111,7 @@
         No hay artículos disponibles para mostrar.
     </asp:Panel>
 
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-4">
 
         <asp:Repeater ID="repArticulos" runat="server">
             <ItemTemplate>
@@ -143,5 +143,13 @@
             </ItemTemplate>
         </asp:Repeater>
     </div>
+
+    <asp:Panel ID="pnlPaginacion" runat="server" CssClass="d-flex justify-content-center align-items-center gap-3 mt-4" Visible="false">
+
+        <asp:Button ID="btnAnterior" runat="server" Text="⬅ Anterior" CssClass="btn btn-outline-primary" OnClick="btnAnterior_Click" CausesValidation="false" />
+        <asp:Label ID="lblPagina" runat="server" CssClass="fw-bold"> </asp:Label>
+        <asp:Button ID="btnSiguiente" runat="server" Text="Siguiente ➡" CssClass="btn btn-outline-primary" OnClick="btnSiguiente_Click" CausesValidation="false" />
+
+    </asp:Panel>
 
 </asp:Content>

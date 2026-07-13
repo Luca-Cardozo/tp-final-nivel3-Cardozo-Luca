@@ -1,5 +1,7 @@
-﻿using negocio;
+﻿using dominio;
+using negocio;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +14,39 @@ namespace app_web
     {
 
         public const string UrlPlaceholder = "https://media.istockphoto.com/id/1980276924/es/vector/sin-elemento-gr%C3%A1fico-en-miniatura-de-la-foto-no-se-ha-encontrado-ninguna-imagen-o-est%C3%A1.jpg?s=612x612&w=0&k=20&c=artWlQoi5R1edWQBv9LfzeLXupOcH_alZnMgvXdYkF4=";
+
+        // Para la paginación
+        private int PaginaActual
+        {
+            get
+            {
+                if (ViewState["PaginaActual"] == null)
+                    return 0;
+
+                return (int)ViewState["PaginaActual"];
+            }
+
+            set
+            {
+                ViewState["PaginaActual"] = value;
+            }
+        }
+
+        private bool FiltrosActivos
+        {
+            get
+            {
+                if (ViewState["FiltrosActivos"] == null)
+                    return false;
+
+                return (bool)ViewState["FiltrosActivos"];
+            }
+
+            set
+            {
+                ViewState["FiltrosActivos"] = value;
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -56,16 +91,46 @@ namespace app_web
 
             try
             {
-                repArticulos.DataSource = negocio.listar();
-                repArticulos.DataBind();
-                pnlSinArticulos.Visible = repArticulos.Items.Count == 0;
-                pnlError.Visible = false;
+                List<Articulo> lista = negocio.listar();
+                mostrarArticulos(lista);
             }
             catch (Exception ex)
             {
                 pnlError.Visible = true;
                 lblError.Text = "No se pudieron cargar los artículos: " + ex.Message;
             }
+        }
+
+        private void cargarArticulosFiltrados()
+        {
+            int idMarca = int.Parse(ddlMarca.SelectedValue);
+            int idCategoria = int.Parse(ddlCategoria.SelectedValue);
+
+            decimal? precioMinimo = null;
+            decimal? precioMaximo = null;
+
+            decimal valor;
+
+            if (!string.IsNullOrWhiteSpace(txtPrecioMinimo.Text))
+            {
+                if (decimal.TryParse(txtPrecioMinimo.Text, out valor))
+                {
+                    precioMinimo = valor;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(txtPrecioMaximo.Text))
+            {
+                if (decimal.TryParse(txtPrecioMaximo.Text, out valor))
+                {
+                    precioMaximo = valor;
+                }
+            }
+
+            ArticuloNegocio negocio = new ArticuloNegocio();
+
+            List<Articulo> lista = negocio.filtrar(null, txtNombre.Text.Trim(), idMarca, idCategoria, precioMinimo, precioMaximo, ddlOrden.SelectedValue);
+            mostrarArticulos(lista);
         }
 
         public string obtenerImagen(object imagen)
@@ -94,13 +159,8 @@ namespace app_web
         {
             lblErrorFiltros.Text = "";
 
-            int idMarca = int.Parse(ddlMarca.SelectedValue);
-            int idCategoria = int.Parse(ddlCategoria.SelectedValue);
-            string orden = ddlOrden.SelectedValue;
-
             decimal? precioMinimo = null;
             decimal? precioMaximo = null;
-
             decimal valor;
 
             if (!string.IsNullOrWhiteSpace(txtPrecioMinimo.Text))
@@ -117,7 +177,7 @@ namespace app_web
             {
                 if (!decimal.TryParse(txtPrecioMaximo.Text, out valor))
                 {
-                    lblErrorFiltros.Text ="El precio máximo ingresado no es válido.";
+                    lblErrorFiltros.Text = "El precio máximo ingresado no es válido.";
                     return;
                 }
                 precioMaximo = valor;
@@ -129,14 +189,12 @@ namespace app_web
                 return;
             }
 
-            ArticuloNegocio negocio = new ArticuloNegocio();
+            PaginaActual = 0;
+            FiltrosActivos = true;
 
             try
             {
-                repArticulos.DataSource = negocio.filtrar(txtNombre.Text.Trim(), idMarca, idCategoria, precioMinimo, precioMaximo, orden);
-                repArticulos.DataBind();
-                pnlSinArticulos.Visible = repArticulos.Items.Count == 0;
-                pnlError.Visible = false;
+                cargarArticulosFiltrados();
             }
             catch (Exception ex)
             {
@@ -158,7 +216,77 @@ namespace app_web
             lblErrorFiltros.Text = "";
             pnlError.Visible = false;
 
+            PaginaActual = 0;
+            FiltrosActivos = false;
+
             cargarArticulos();
+        }
+
+        protected void btnAnterior_Click(object sender, EventArgs e)
+        {
+            if (PaginaActual > 0)
+                PaginaActual--;
+
+            recargarListadoActual();
+        }
+
+        protected void btnSiguiente_Click(object sender, EventArgs e)
+        {
+            PaginaActual++;
+
+            recargarListadoActual();
+        }
+
+        private void mostrarArticulos(List<Articulo> lista)
+        {
+            PagedDataSource paginado = new PagedDataSource();
+
+            paginado.DataSource = lista;
+            paginado.AllowPaging = true;
+            paginado.PageSize = 16;
+
+            if (PaginaActual >= paginado.PageCount && paginado.PageCount > 0)
+            {
+                PaginaActual = paginado.PageCount - 1;
+            }
+
+            paginado.CurrentPageIndex = PaginaActual;
+
+            repArticulos.DataSource = paginado;
+            repArticulos.DataBind();
+
+            btnAnterior.Enabled = !paginado.IsFirstPage;
+            btnSiguiente.Enabled = !paginado.IsLastPage;
+
+            if (lista.Count > 0)
+            {
+                lblPagina.Text = "Página " + (PaginaActual + 1) + " de " + paginado.PageCount;
+                pnlPaginacion.Visible = paginado.PageCount > 1;
+            }
+            else
+            {
+                lblPagina.Text = "";
+                pnlPaginacion.Visible = false;
+            }
+
+            pnlSinArticulos.Visible = lista.Count == 0;
+            pnlError.Visible = false;
+        }
+
+        private void recargarListadoActual()
+        {
+            try
+            {
+                if (FiltrosActivos)
+                    cargarArticulosFiltrados();
+                else
+                    cargarArticulos();
+            }
+            catch (Exception ex)
+            {
+                pnlError.Visible = true;
+                lblError.Text = "No se pudo cambiar de página: " + ex.Message;
+            }
         }
 
     }

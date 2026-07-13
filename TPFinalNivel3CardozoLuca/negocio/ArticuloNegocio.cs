@@ -276,7 +276,7 @@ namespace negocio
             }
         }
 
-        public List<Articulo> filtrar(string nombre, int idMarca, int idCategoria, decimal? precioMinimo, decimal? precioMaximo, string orden)
+        public List<Articulo> filtrar(string codigo, string nombre, int idMarca, int idCategoria, decimal? precioMinimo, decimal? precioMaximo, string orden)
         {
             List<Articulo> lista = new List<Articulo>();
             AccesoDatos datos = new AccesoDatos();
@@ -290,6 +290,9 @@ namespace negocio
                     "INNER JOIN MARCAS M ON A.IdMarca = M.Id " +
                     "INNER JOIN CATEGORIAS C ON A.IdCategoria = C.Id " +
                     "WHERE 1 = 1 ";
+
+                if (!string.IsNullOrWhiteSpace(codigo))
+                    consulta += "AND A.Codigo LIKE @Codigo ";
 
                 if (!string.IsNullOrWhiteSpace(nombre))
                     consulta += "AND A.Nombre LIKE @Nombre ";
@@ -326,6 +329,9 @@ namespace negocio
                 }
 
                 datos.setearConsulta(consulta);
+
+                if (!string.IsNullOrWhiteSpace(codigo))
+                    datos.setearParametro("@Codigo", "%" + codigo.ToUpper() + "%");
 
                 if (!string.IsNullOrWhiteSpace(nombre))
                     datos.setearParametro("@Nombre", "%" + nombre + "%");
