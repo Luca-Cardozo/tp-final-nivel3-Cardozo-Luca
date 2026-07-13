@@ -1,0 +1,65 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Master.master.cs" Inherits="app_web.Master" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+<body>
+    <form id="form1" runat="server">
+
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+
+                <a class="navbar-brand" href="Home.aspx">Catálogo Tecnológico </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir navegación"><span class="navbar-toggler-icon"></span></button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="Home.aspx">🏠 Inicio </a>
+                        </li>
+                        <li class="nav-item" id="liFavoritos" runat="server">
+                            <a class="nav-link" href="Favoritos.aspx">❤️ Favoritos </a>
+                        </li>
+                        <li class="nav-item" id="liAdministrarArticulos" runat="server">
+                            <a class="nav-link" href="AdministrarArticulos.aspx">⚙️ Administrar artículos </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav align-items-lg-center">
+                        <li class="nav-item" id="liRegistro" runat="server">
+                            <a class="nav-link" href="RegistroUser.aspx">📝 Registrarse </a>
+                        </li>
+                        <li class="nav-item" id="liLogin" runat="server">
+                            <a class="nav-link" href="Login.aspx">🔑 Iniciar sesión </a>
+                        </li>
+                        <li class="nav-item" id="liPerfil" runat="server">
+                            <a class="nav-link" href="Perfil.aspx">👤 Mi perfil </a>
+                        </li>
+                        <li class="nav-item" id="liLogout" runat="server">
+                            <a class="nav-link" href="Logout.aspx">🚪 Cerrar sesión </a>
+                        </li>
+                        <li class="nav-item ms-lg-3" id="liUsuarioLogueado" runat="server">
+                            <asp:Label ID="lblUsuarioLogueado" runat="server" CssClass="navbar-text fw-bold text-light"> </asp:Label>
+                        </li>
+                        <li class="nav-item ms-lg-2" id="liAvatar" runat="server">
+                            <asp:Image ID="imgAvatar" runat="server" CssClass="rounded-circle border border-light" Style="width: 40px; height: 40px; object-fit: cover;" AlternateText="Imagen de perfil" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container mt-4">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
+        </main>
+
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
