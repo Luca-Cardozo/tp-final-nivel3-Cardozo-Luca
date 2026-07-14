@@ -155,5 +155,51 @@ namespace negocio
             }
         }
 
+        public List<Marca> filtrar(string descripcion, string orden)
+        {
+            List<Marca> lista = new List<Marca>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                string consulta = "SELECT Id, Descripcion FROM MARCAS WHERE 1 = 1 ";
+
+                if (!string.IsNullOrWhiteSpace(descripcion))
+                    consulta += "AND Descripcion LIKE @Descripcion ";
+
+                if (orden == "Asc")
+                    consulta += "ORDER BY Descripcion ASC";
+                else if (orden == "Desc")
+                    consulta += "ORDER BY Descripcion DESC";
+
+                datos.setearConsulta(consulta);
+
+                if (!string.IsNullOrWhiteSpace(descripcion))
+                {
+                    datos.setearParametro("@Descripcion", "%" + descripcion + "%");
+                }
+
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Marca aux = new Marca();
+                    aux.Id = (int)datos.Lector["Id"];
+                    aux.Descripcion = datos.Lector["Descripcion"].ToString();
+                    lista.Add(aux);
+                }
+
+                return lista;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }

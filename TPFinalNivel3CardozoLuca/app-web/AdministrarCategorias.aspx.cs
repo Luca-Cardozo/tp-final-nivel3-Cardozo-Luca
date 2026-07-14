@@ -212,5 +212,31 @@ namespace app_web
             lblMensaje.Text = mensaje;
         }
 
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            CategoriaNegocio negocio = new CategoriaNegocio();
+
+            try
+            {
+                List<Categoria> lista = negocio.filtrar(txtFiltroDescripcion.Text.Trim(), ddlOrden.SelectedValue);
+
+                dgvCategorias.PageIndex = 0;
+                dgvCategorias.DataSource = lista;
+                dgvCategorias.DataBind();
+            }
+            catch (Exception ex)
+            {
+                mostrarMensaje("No se pudo realizar la búsqueda: " + ex.Message, "danger");
+            }
+        }
+
+        protected void btnRecargar_Click(object sender, EventArgs e)
+        {
+            txtFiltroDescripcion.Text = "";
+            ddlOrden.SelectedIndex = 0;
+            dgvCategorias.PageIndex = 0;
+            cargarCategorias();
+        }
+
     }
 }

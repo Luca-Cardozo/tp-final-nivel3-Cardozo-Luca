@@ -40,6 +40,43 @@
 
         </div>
 
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-header bg-dark text-white text-center">
+                <h5 class="mb-0">Buscar y ordenar</h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="row g-3 justify-content-center">
+
+                    <div class="col-12 col-md-5">
+                        <label class="form-label">Descripción</label>
+                        <asp:TextBox ID="txtFiltroDescripcion" runat="server" CssClass="form-control" placeholder="Buscar por descripción"> </asp:TextBox>
+                    </div>
+
+                    <div class="col-12 col-md-3">
+                        <label class="form-label">Ordenar por</label>
+                        <asp:DropDownList ID="ddlOrden" runat="server" CssClass="form-select">
+                            <asp:ListItem Text="Sin orden" Value="" />
+                            <asp:ListItem Text="Descripción (A-Z)" Value="Asc" />
+                            <asp:ListItem Text="Descripción (Z-A)" Value="Desc" />
+                        </asp:DropDownList>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+
+                    <asp:Button ID="btnBuscar" runat="server" Text="🔍 Buscar" CssClass="btn btn-primary px-4" CausesValidation="false" OnClick="btnBuscar_Click" />
+                    <asp:Button ID="btnRecargar" runat="server" Text="🔄 Recargar" CssClass="btn btn-outline-secondary px-4" CausesValidation="false" OnClick="btnRecargar_Click" />
+
+                </div>
+
+            </div>
+
+        </div>
+
         <asp:Panel ID="pnlMensaje" runat="server" Visible="false" CssClass="alert text-center shadow-sm">
             <asp:Label ID="lblMensaje" runat="server"></asp:Label>
         </asp:Panel>
@@ -85,15 +122,15 @@
                 AllowPaging="true" PageSize="10" OnPageIndexChanging="dgvMarcas_PageIndexChanging"
                 OnRowCommand="dgvMarcas_RowCommand">
 
-                <columns>
+                <Columns>
 
                     <asp:BoundField DataField="Id" HeaderText="ID" />
                     <asp:BoundField DataField="Descripcion" HeaderText="Descripción" />
                     <asp:TemplateField HeaderText="Acciones">
 
-                        <itemstyle horizontalalign="Center" width="260px" />
+                        <ItemStyle HorizontalAlign="Center" Width="260px" />
 
-                        <itemtemplate>
+                        <ItemTemplate>
 
                             <div class="d-flex justify-content-center gap-2">
 
@@ -102,13 +139,13 @@
 
                             </div>
 
-                        </itemtemplate>
+                        </ItemTemplate>
 
                     </asp:TemplateField>
 
-                </columns>
+                </Columns>
 
-                <pagerstyle horizontalalign="Center" cssclass="text-center" />
+                <PagerStyle HorizontalAlign="Center" CssClass="text-center" />
 
             </asp:GridView>
 
