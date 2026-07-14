@@ -23,6 +23,7 @@ namespace app_web
 
             if (!IsPostBack)
             {
+                cargarFiltros();
                 cargarFavoritos();
             }
         }
@@ -109,6 +110,67 @@ namespace app_web
             pnlMensaje.CssClass = "alert alert-" + tipo + " text-center shadow-sm";
 
             lblMensaje.Text = mensaje;
+        }
+
+        private void cargarFiltros()
+        {
+            MarcaNegocio marcaNegocio = new MarcaNegocio();
+            CategoriaNegocio categoriaNegocio = new CategoriaNegocio();
+
+            try
+            {
+                ddlMarca.DataSource = marcaNegocio.listar();
+                ddlMarca.DataValueField = "Id";
+                ddlMarca.DataTextField = "Descripcion";
+                ddlMarca.DataBind();
+                ddlMarca.Items.Insert(0, new ListItem("Todas las marcas", "0"));
+
+                ddlCategoria.DataSource = categoriaNegocio.listar();
+                ddlCategoria.DataValueField = "Id";
+                ddlCategoria.DataTextField = "Descripcion";
+                ddlCategoria.DataBind();
+                ddlCategoria.Items.Insert(0, new ListItem("Todas las categorías", "0"));
+            }
+            catch (Exception ex)
+            {
+                mostrarMensaje("No se pudieron cargar los filtros: " + ex.Message, "danger");
+            }
+        }
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            Usuario usuario = Seguridad.usuarioActual(Session);
+
+            FavoritoNegocio negocio = new FavoritoNegocio();
+
+            try
+            {
+                List<Articulo> lista = negocio.filtrarFavoritos(usuario.Id, txtNombre.Text.Trim(), int.Parse(ddlMarca.SelectedValue), int.Parse(ddlCategoria.SelectedValue), ddlOrden.SelectedValue);
+
+                repFavoritos.DataSource = lista;
+                repFavoritos.DataBind();
+
+                pnlSinFavoritos.Visible = lista.Count == 0;
+
+                pnlMensaje.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                mostrarMensaje("No se pudo realizar la búsqueda: " + ex.Message, "danger");
+            }
+        }
+
+        protected void btnRecargar_Click(object sender, EventArgs e)
+        {
+            txtNombre.Text = "";
+
+            ddlMarca.SelectedIndex = 0;
+            ddlCategoria.SelectedIndex = 0;
+            ddlOrden.SelectedIndex = 0;
+
+            pnlMensaje.Visible = false;
+
+            cargarFavoritos();
         }
 
     }

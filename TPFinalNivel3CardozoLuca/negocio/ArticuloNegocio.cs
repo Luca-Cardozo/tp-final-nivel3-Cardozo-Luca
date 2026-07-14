@@ -172,7 +172,8 @@ namespace negocio
             AccesoDatos datos = new AccesoDatos();
             try
             {
-                datos.setearConsulta("DELETE FROM ARTICULOS WHERE Id = @Id");
+                datos.setearConsulta("DELETE FROM FAVORITOS WHERE IdArticulo = @Id; " +
+                    "DELETE FROM ARTICULOS WHERE Id = @Id;");
                 datos.setearParametro("@Id", id);
                 datos.ejecutarAccion();
             }

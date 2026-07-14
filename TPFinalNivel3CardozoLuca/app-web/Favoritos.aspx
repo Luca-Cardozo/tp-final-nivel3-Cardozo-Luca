@@ -40,6 +40,63 @@
 
     </div>
 
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header bg-dark text-white text-center">
+            <h5 class="mb-0">Filtrar favoritos</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-3 justify-content-center">
+
+                <div class="col-12 col-md-3">
+
+                    <label class="form-label">Nombre</label>
+                    <asp:TextBox ID="txtNombre" runat="server" CssClass="form-control" placeholder="Ej: Motorola"> </asp:TextBox>
+
+                </div>
+
+                <div class="col-12 col-md-3">
+
+                    <label class="form-label">Marca</label>
+                    <asp:DropDownList ID="ddlMarca" runat="server" CssClass="form-select"></asp:DropDownList>
+
+                </div>
+
+                <div class="col-12 col-md-3">
+
+                    <label class="form-label">Categoría</label>
+                    <asp:DropDownList ID="ddlCategoria" runat="server" CssClass="form-select"></asp:DropDownList>
+
+                </div>
+
+                <div class="col-12 col-md-3">
+
+                    <label class="form-label">Ordenar por</label>
+                    <asp:DropDownList ID="ddlOrden" runat="server" CssClass="form-select">
+                        <asp:ListItem Text="Sin orden" Value="" Selected="True" />
+                        <asp:ListItem Text="Nombre (A-Z)" Value="NombreAsc" />
+                        <asp:ListItem Text="Nombre (Z-A)" Value="NombreDesc" />
+                        <asp:ListItem Text="Precio (menor a mayor)" Value="PrecioAsc" />
+                        <asp:ListItem Text="Precio (mayor a menor)" Value="PrecioDesc" />
+                    </asp:DropDownList>
+
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 mt-4">
+
+                <asp:Button ID="btnBuscar" runat="server" Text="🔍 Buscar" CssClass="btn btn-primary px-4" CausesValidation="false" OnClick="btnBuscar_Click" />
+                <asp:Button ID="btnRecargar" runat="server" Text="🔄 Recargar" CssClass="btn btn-outline-secondary px-4" CausesValidation="false" OnClick="btnRecargar_Click" />
+
+            </div>
+
+        </div>
+
+    </div>
+
     <asp:Panel ID="pnlMensaje" runat="server" Visible="false" CssClass="alert text-center shadow-sm">
         <asp:Label ID="lblMensaje" runat="server"> </asp:Label>
     </asp:Panel>
