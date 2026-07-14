@@ -103,6 +103,10 @@
 
     </div>
 
+    <asp:Panel ID="pnlMensaje" runat="server" Visible="false" CssClass="alert text-center shadow-sm">
+        <asp:Label ID="lblMensaje" runat="server"> </asp:Label>
+    </asp:Panel>
+
     <asp:Panel ID="pnlError" runat="server" CssClass="alert alert-danger" Visible="false">
         <asp:Label ID="lblError" runat="server"></asp:Label>
     </asp:Panel>
@@ -113,7 +117,7 @@
 
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-4">
 
-        <asp:Repeater ID="repArticulos" runat="server">
+        <asp:Repeater ID="repArticulos" runat="server" OnItemCommand="repArticulos_ItemCommand">
             <ItemTemplate>
                 <div class="col">
                     <div class="card card-articulo">
@@ -133,10 +137,24 @@
                                 <%# mostrarPrecio(Eval("Precio")) %>
                             </p>
 
-                            <a
-                                href='<%# "DetalleArticulo.aspx?id=" + Eval("Id") %>'
-                                class="btn btn-primary mt-auto">Ver detalle
-                            </a>
+                            <div class="d-grid gap-2 mt-auto">
+
+                                <a
+                                    href='<%# "DetalleArticulo.aspx?id=" + Eval("Id") %>'
+                                    class="btn btn-primary">Ver detalle
+                                </a>
+
+                                <asp:LinkButton
+                                    ID="btnFavorito"
+                                    runat="server"
+                                    Text="❤️ Agregar a favoritos"
+                                    CssClass="btn btn-outline-danger"
+                                    CommandName="AgregarFavorito"
+                                    CommandArgument='<%# Eval("Id") %>'
+                                    CausesValidation="false">
+                                </asp:LinkButton>
+
+                            </div>
                         </div>
                     </div>
                 </div>

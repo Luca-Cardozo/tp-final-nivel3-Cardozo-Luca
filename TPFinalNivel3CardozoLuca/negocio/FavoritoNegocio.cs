@@ -36,7 +36,6 @@ namespace negocio
                     aux.Id = (int)datos.Lector["Id"];
                     aux.Codigo = (string)datos.Lector["Codigo"];
                     aux.Nombre = (string)datos.Lector["Nombre"];
-                    aux.Descripcion = (string)datos.Lector["Descripcion"];
 
                     aux.Marca = new Marca();
                     aux.Marca.Id = (int)datos.Lector["IdMarca"];
@@ -46,8 +45,20 @@ namespace negocio
                     aux.Categoria.Id = (int)datos.Lector["IdCategoria"];
                     aux.Categoria.Descripcion = (string)datos.Lector["Categoria"];
 
-                    aux.Imagen = (string)datos.Lector["ImagenUrl"];
-                    aux.Precio = (decimal)datos.Lector["Precio"];
+                    if (datos.Lector["Descripcion"] is DBNull)
+                        aux.Descripcion = null;
+                    else
+                        aux.Descripcion = datos.Lector["Descripcion"].ToString();
+
+                    if (datos.Lector["ImagenUrl"] is DBNull)
+                        aux.Imagen = null;
+                    else
+                        aux.Imagen = datos.Lector["ImagenUrl"].ToString();
+
+                    if (datos.Lector["Precio"] is DBNull)
+                        aux.Precio = null;
+                    else
+                        aux.Precio = (decimal)datos.Lector["Precio"];
 
                     lista.Add(aux);
                 }

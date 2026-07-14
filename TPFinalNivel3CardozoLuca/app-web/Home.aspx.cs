@@ -219,6 +219,8 @@ namespace app_web
             PaginaActual = 0;
             FiltrosActivos = false;
 
+            pnlMensaje.Visible = false;
+
             cargarArticulos();
         }
 
@@ -287,6 +289,51 @@ namespace app_web
                 pnlError.Visible = true;
                 lblError.Text = "No se pudo cambiar de página: " + ex.Message;
             }
+        }
+
+        protected void repArticulos_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName != "AgregarFavorito")
+                return;
+
+            Usuario usuario = Seguridad.usuarioActual(Session);
+
+            if (usuario == null)
+            {
+                Response.Redirect("Login.aspx");
+                return;
+            }
+
+            int idArticulo;
+
+            if (!int.TryParse(e.CommandArgument.ToString(), out idArticulo))
+            {
+                pnlError.Visible = true;
+                lblError.Text = "El identificador del artículo no es válido.";
+                return;
+            }
+
+            FavoritoNegocio negocio = new FavoritoNegocio();
+
+            try
+            {
+                negocio.agregarFavorito(usuario.Id, idArticulo);
+
+                pnlError.Visible = false;
+
+                mostrarMensaje("El artículo fue agregado a favoritos.", "success");
+            }
+            catch (Exception ex)
+            {
+                mostrarMensaje(ex.Message, "danger");
+            }
+        }
+
+        private void mostrarMensaje(string mensaje, string tipo)
+        {
+            pnlMensaje.Visible = true;
+            pnlMensaje.CssClass = "alert alert-" + tipo + " text-center shadow-sm";
+            lblMensaje.Text = mensaje;
         }
 
     }
