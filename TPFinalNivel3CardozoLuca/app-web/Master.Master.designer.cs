@@ -60,6 +60,15 @@ namespace app_web
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl liAdministrarMarcas;
 
         /// <summary>
+        /// Control liAdministrarCategorias.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liAdministrarCategorias;
+
+        /// <summary>
         /// Control liRegistro.
         /// </summary>
         /// <remarks>

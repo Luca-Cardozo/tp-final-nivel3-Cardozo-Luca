@@ -60,7 +60,7 @@
 
                         <label class="form-label campo-obligatorio">Descripción</label>
                         <asp:TextBox ID="txtDescripcion" runat="server" CssClass="form-control" MaxLength="50" placeholder="Ej: Samsung"> </asp:TextBox>
-                        <asp:RequiredFieldValidator ID="rfvDescripcion" runat="server" ControlToValidate="txtDescripcion" ErrorMessage="La descripción es obligatoria." Text="La descripción es obligatoria." CssClass="text-danger mt-1" ValidationGroup="Marca" Display="Dynamic"></asp:RequiredFieldValidator>
+                        <asp:RequiredFieldValidator ID="rfvDescripcion" runat="server" ControlToValidate="txtDescripcion" ErrorMessage="La descripción es obligatoria." Text="La descripción es obligatoria." CssClass="text-danger mt-1" ValidationGroup="Marca" Display="Dynamic" EnableClientScript="false"></asp:RequiredFieldValidator>
 
                     </div>
 
@@ -68,7 +68,7 @@
 
                 <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
 
-                    <asp:Button ID="btnGuardar" runat="server" Text="➕ Agregar marca" CssClass="btn btn-success px-4" ValidationGroup="Marca" OnClick="btnGuardar_Click" />
+                    <asp:Button ID="btnGuardar" runat="server" Text="➕ Agregar marca" CssClass="btn btn-success px-4" ValidationGroup="Marca" CausesValidation="true" OnClick="btnGuardar_Click" />
                     <asp:Button ID="btnCancelar" runat="server" Text="↩ Cancelar edición" CssClass="btn btn-outline-secondary px-4" CausesValidation="false" Visible="false" OnClick="btnCancelar_Click" />
 
                 </div>
@@ -82,7 +82,7 @@
             <asp:GridView ID="dgvMarcas" runat="server" AutoGenerateColumns="false"
                 CssClass="table table-striped table-hover table-bordered tabla-marcas"
                 DataKeyNames="Id" EmptyDataText="No hay marcas registradas."
-                AllowPaging="true" PageSize="5" OnPageIndexChanging="dgvMarcas_PageIndexChanging"
+                AllowPaging="true" PageSize="10" OnPageIndexChanging="dgvMarcas_PageIndexChanging"
                 OnRowCommand="dgvMarcas_RowCommand">
 
                 <columns>

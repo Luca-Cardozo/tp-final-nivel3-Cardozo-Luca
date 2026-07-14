@@ -33,6 +33,9 @@
                         <li class="nav-item" id="liAdministrarMarcas" runat="server">
                             <a class="nav-link" href="AdministrarMarcas.aspx">⚙️ Administrar marcas </a>
                         </li>
+                        <li class="nav-item" id="liAdministrarCategorias" runat="server">
+                            <a class="nav-link" href="AdministrarCategorias.aspx">⚙️ Administrar categorías </a>
+                        </li>
                     </ul>
                     <ul class="navbar-nav align-items-lg-center">
                         <li class="nav-item" id="liRegistro" runat="server">

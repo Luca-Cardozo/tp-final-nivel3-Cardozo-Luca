@@ -45,6 +45,7 @@ namespace app_web
 
             liAdministrarArticulos.Visible = esAdministrador;
             liAdministrarMarcas.Visible = esAdministrador;
+            liAdministrarCategorias.Visible = esAdministrador;
 
             if (sesionActiva)
             {
