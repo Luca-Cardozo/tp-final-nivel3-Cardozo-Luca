@@ -44,6 +44,7 @@ namespace app_web
             liAvatar.Visible = sesionActiva;
 
             liAdministrarArticulos.Visible = esAdministrador;
+            liAdministrarMarcas.Visible = esAdministrador;
 
             if (sesionActiva)
             {

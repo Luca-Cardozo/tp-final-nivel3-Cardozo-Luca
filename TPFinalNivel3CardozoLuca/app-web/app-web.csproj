@@ -69,6 +69,7 @@
   <ItemGroup>
     <Content Include="AccesoDenegado.aspx" />
     <Content Include="AdministrarArticulos.aspx" />
+    <Content Include="AdministrarMarcas.aspx" />
     <Content Include="DetalleArticulo.aspx" />
     <Content Include="Favoritos.aspx" />
     <Content Include="FormularioArticulo.aspx" />
@@ -94,6 +95,13 @@
     </Compile>
     <Compile Include="AdministrarArticulos.aspx.designer.cs">
       <DependentUpon>AdministrarArticulos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="AdministrarMarcas.aspx.cs">
+      <DependentUpon>AdministrarMarcas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="AdministrarMarcas.aspx.designer.cs">
+      <DependentUpon>AdministrarMarcas.aspx</DependentUpon>
     </Compile>
     <Compile Include="DetalleArticulo.aspx.cs">
       <DependentUpon>DetalleArticulo.aspx</DependentUpon>
