@@ -83,12 +83,15 @@ namespace app_web
                 return UrlPlaceholder;
             }
 
-            string url = imagen.ToString();
+            string ruta = imagen.ToString();
 
-            if (string.IsNullOrWhiteSpace(url))
+            if (string.IsNullOrWhiteSpace(ruta))
                 return UrlPlaceholder;
 
-            return url;
+            if (ruta.StartsWith("~/"))
+                return ResolveUrl(ruta);
+
+            return ruta;
         }
 
         public string mostrarPrecio(object precio)

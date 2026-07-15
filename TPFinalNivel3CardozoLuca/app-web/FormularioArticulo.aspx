@@ -22,26 +22,57 @@
         }
 
         .validator {
-            display: block;
             margin-top: 4px;
         }
     </style>
 
     <script type="text/javascript">
 
-        const urlPlaceholder =
-        '<%= UrlPlaceholder %>';
+        const urlPlaceholder = '<%= UrlPlaceholder %>';
 
-        function actualizarVistaPrevia(url) {
+        function actualizarVistaPreviaUrl(url) {
 
             const imagen = document.getElementById("imgPreview");
+            const archivo = document.getElementById("fuImagen");
+
+            // Si el usuario escribe una URL se limpia cualquier archivo seleccionado.
+            if (url && url.trim() !== "") {
+                archivo.value = "";
+            }
 
             if (!url || url.trim() === "") {
                 imagen.src = urlPlaceholder;
                 return;
             }
 
+            imagen.onerror = function () {
+                this.onerror = null;
+                this.src = urlPlaceholder;
+            };
+
             imagen.src = url.trim();
+        }
+
+        function actualizarVistaPreviaArchivo(input) {
+
+            const imagen = document.getElementById("imgPreview");
+            const txtUrl = document.getElementById("txtImagen");
+
+            if (!input.files || input.files.length === 0) {
+                return;
+            }
+
+            // Si se selecciona un archivo, se limpia la URL externa.
+            txtUrl.value = "";
+
+            const archivo = input.files[0];
+            const lector = new FileReader();
+
+            lector.onload = function (evento) {
+                imagen.src = evento.target.result;
+            };
+
+            lector.readAsDataURL(archivo);
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -133,7 +164,17 @@
                                 <div class="col-12">
 
                                     <label class="form-label">URL de la imagen</label>
-                                    <asp:TextBox ID="txtImagen" runat="server" CssClass="form-control" placeholder="https://ejemplo.com/imagen.jpg" oninput="actualizarVistaPrevia(this.value)"> </asp:TextBox>
+                                    <asp:TextBox ID="txtImagen" runat="server" ClientIDMode="Static" CssClass="form-control" placeholder="https://ejemplo.com/imagen.jpg" oninput="actualizarVistaPreviaUrl(this.value)"> </asp:TextBox>
+                                    <small class="text-muted">Podés pegar una URL externa o seleccionar un archivo debajo.</small>
+
+                                </div>
+
+                                <div class="col-12">
+
+                                    <label class="form-label">Imagen desde archivo</label>
+                                    <asp:FileUpload ID="fuImagen" runat="server" ClientIDMode="Static" CssClass="form-control" accept=".jpg,.jpeg,.png,.webp" onchange="actualizarVistaPreviaArchivo(this)" />
+                                    <small class="text-muted">Formatos permitidos: JPG, JPEG, PNG y WEBP. Tamaño máximo: 5 MB.</small>
+                                    <asp:HiddenField ID="hfImagenActual" runat="server" />
 
                                 </div>
 
@@ -161,7 +202,7 @@
 
                             <asp:Image ID="imgPreview" runat="server" CssClass="imagen-preview border rounded" AlternateText="Vista previa del artículo" ClientIDMode="Static" />
                             <p class="text-muted small text-center mt-2">
-                                La imagen se actualizará cuando salgas del campo URL.
+                                La vista previa se actualizará al escribir una URL o seleccionar un archivo.
                             </p>
 
                         </div>

@@ -3,6 +3,7 @@ using negocio;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -141,13 +142,25 @@ namespace app_web
 
                 ddlCategoria.SelectedValue = articulo.Categoria.Id.ToString();
 
-                if (articulo.Imagen != null)
+                if (!string.IsNullOrWhiteSpace(articulo.Imagen))
                 {
-                    txtImagen.Text = articulo.Imagen;
+                    hfImagenActual.Value = articulo.Imagen;
                     imgPreview.ImageUrl = articulo.Imagen;
+
+                    if (articulo.Imagen.StartsWith("http://") || articulo.Imagen.StartsWith("https://"))
+                    {
+                        // Es una URL externa.
+                        txtImagen.Text = articulo.Imagen;
+                    }
+                    else
+                    {
+                        // Es un archivo local.
+                        txtImagen.Text = "";
+                    }
                 }
                 else
                 {
+                    hfImagenActual.Value = "";
                     txtImagen.Text = "";
                     imgPreview.ImageUrl = UrlPlaceholder;
                 }
@@ -183,8 +196,13 @@ namespace app_web
 
                 if (ModoEdicion)
                 {
+                    string imagenAnterior = hfImagenActual.Value;
                     articulo.Id = IdArticulo;
                     negocio.modificar(articulo);
+                    if (imagenAnterior != articulo.Imagen)
+                    {
+                        eliminarImagenFisica(imagenAnterior);
+                    }
                     mostrarMensaje("El artículo fue modificado correctamente. Será redirigido al listado en 3 segundos...", "success");
                     redirigirAlListado();
                 }
@@ -224,13 +242,28 @@ namespace app_web
             articulo.Categoria = new Categoria();
             articulo.Categoria.Id = int.Parse(ddlCategoria.SelectedValue);
 
-            if (string.IsNullOrWhiteSpace(txtImagen.Text))
+
+            string nuevaImagenArchivo = guardarImagenArchivo();
+
+            if (!string.IsNullOrWhiteSpace(nuevaImagenArchivo))
             {
-                articulo.Imagen = null;
+                // Se seleccionó un archivo nuevo.
+                articulo.Imagen = nuevaImagenArchivo;
+            }
+            else if (!string.IsNullOrWhiteSpace(txtImagen.Text))
+            {
+                // Se ingresó una URL externa.
+                articulo.Imagen = txtImagen.Text.Trim();
+            }
+            else if (!string.IsNullOrWhiteSpace(hfImagenActual.Value))
+            {
+                // Se conserva la imagen que ya tenía.
+                articulo.Imagen = hfImagenActual.Value;
             }
             else
             {
-                articulo.Imagen = txtImagen.Text.Trim();
+                // No tiene imagen.
+                articulo.Imagen = null;
             }
 
 
@@ -257,7 +290,16 @@ namespace app_web
 
             try
             {
+                Articulo articulo = negocio.buscarPorId(IdArticulo);
+
+                if (articulo == null)
+                {
+                    mostrarMensaje("No se encontró el artículo solicitado.", "danger");
+                    return;
+                }
+
                 negocio.eliminar(IdArticulo);
+                eliminarImagenFisica(articulo.Imagen);
                 mostrarMensaje("El artículo fue eliminado permanentemente. Será redirigido al listado en 3 segundos...", "success");
                 pnlFormulario.Visible = false;
                 redirigirAlListado();
@@ -275,6 +317,8 @@ namespace app_web
             txtDescripcion.Text = "";
             txtImagen.Text = "";
             txtPrecio.Text = "";
+
+            hfImagenActual.Value = "";
 
             ddlMarca.SelectedIndex = 0;
             ddlCategoria.SelectedIndex = 0;
@@ -297,6 +341,59 @@ namespace app_web
                 "setTimeout(function(){ window.location='AdministrarArticulos.aspx'; }, 3000);",
                 true
             );
+        }
+
+        private string guardarImagenArchivo()
+        {
+            if (!fuImagen.HasFile)
+                return null;
+
+            string extension = Path.GetExtension(fuImagen.FileName).ToLower();
+
+            bool extensionValida = extension == ".jpg" || extension == ".jpeg" || extension == ".png" || extension == ".webp";
+
+            if (!extensionValida)
+            {
+                throw new Exception("La imagen debe tener formato JPG, JPEG, PNG o WEBP.");
+            }
+
+            int tamanioMaximo = 5 * 1024 * 1024;
+
+            if (fuImagen.PostedFile.ContentLength > tamanioMaximo)
+            {
+                throw new Exception("La imagen no puede superar los 5 MB.");
+            }
+
+            string nombreArchivo = Guid.NewGuid().ToString() + extension;
+
+            string carpetaFisica = Server.MapPath("~/Images/Articulos/");
+
+            if (!Directory.Exists(carpetaFisica))
+            {
+                Directory.CreateDirectory(carpetaFisica);
+            }
+
+            string rutaFisica = Path.Combine(carpetaFisica, nombreArchivo);
+
+            fuImagen.SaveAs(rutaFisica);
+
+            return "~/Images/Articulos/" + nombreArchivo;
+        }
+
+        private void eliminarImagenFisica(string rutaImagen)
+        {
+            if (string.IsNullOrWhiteSpace(rutaImagen))
+                return;
+
+            if (!rutaImagen.StartsWith("~/Images/Articulos/"))
+                return;
+
+            string rutaFisica = Server.MapPath(rutaImagen);
+
+            if (File.Exists(rutaFisica))
+            {
+                File.Delete(rutaFisica);
+            }
         }
 
     }
