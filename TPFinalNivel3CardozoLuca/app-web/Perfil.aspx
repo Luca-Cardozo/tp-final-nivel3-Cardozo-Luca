@@ -117,29 +117,53 @@
 
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-12 mt-2">
 
-                                <label class="form-label campo-obligatorio">Nueva contraseña</label>
+                                <div class="card border-secondary-subtle mt-2">
 
-                                <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" MaxLength="50" placeholder="Nueva contraseña"> </asp:TextBox>
+                                    <div class="card-header bg-light">
 
-                                <small class="text-muted">Deje este campo vacío si desea conservar su contraseña actual.</small>
+                                        <h6 class="mb-1">Cambio de contraseña<span class="badge text-bg-secondary ms-1">Opcional</span></h6>
+
+                                        <small class="text-muted">Complete ambos campos solamente si desea cambiar su contraseña actual.</small>
+
+                                    </div>
+
+                                    <div class="card-body">
+
+                                        <div class="row g-3">
+
+                                            <div class="col-12 col-md-6">
+
+                                                <label class="form-label">Nueva contraseña</label>
+
+                                                <asp:TextBox ID="txtPassword" runat="server" CssClass="form-control" TextMode="Password" MaxLength="50" placeholder="Nueva contraseña"> </asp:TextBox>
+
+                                            </div>
+
+                                            <div class="col-12 col-md-6">
+
+                                                <label class="form-label">Confirmar nueva contraseña</label>
+
+                                                <asp:TextBox ID="txtConfirmarPassword" runat="server" CssClass="form-control" TextMode="Password" MaxLength="50" placeholder="Repita la contraseña"> </asp:TextBox>
+
+                                                <asp:CompareValidator ID="cvPassword" runat="server" ControlToValidate="txtConfirmarPassword" ControlToCompare="txtPassword" Operator="Equal" Type="String" ErrorMessage="Las contraseñas no coinciden." Text="Las contraseñas no coinciden." CssClass="text-danger validator" ValidationGroup="Perfil" Display="Dynamic">                                                </asp:CompareValidator>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-12 mt-2">
 
-                                <label class="form-label campo-obligatorio">Confirmar nueva contraseña</label>
+                                <hr class="my-2" />
 
-                                <asp:TextBox ID="txtConfirmarPassword" runat="server" CssClass="form-control" TextMode="Password" MaxLength="50" placeholder="Repita la nueva contraseña"> </asp:TextBox>
-
-                                <asp:CompareValidator ID="cvPassword" runat="server" ControlToValidate="txtConfirmarPassword" ControlToCompare="txtPassword" Operator="Equal" Type="String" ErrorMessage="Las contraseñas no coinciden." Text="Las contraseñas no coinciden." CssClass="text-danger validator" ValidationGroup="Perfil" Display="Dynamic"> </asp:CompareValidator>
-
-                            </div>
-
-                            <div class="col-12">
-
-                                <label class="form-label">Imagen de perfil</label>
+                                <h6 class="mb-3">Imagen de perfil</h6>
 
                                 <asp:FileUpload ID="fuImagenPerfil" runat="server" CssClass="form-control" ClientIDMode="Static" accept=".jpg,.jpeg,.png,.webp" onchange="mostrarImagenPerfil(this)" />
 

@@ -110,9 +110,33 @@ namespace app_web
 
                 negocio.altaUsuario(usuario);
 
+                try
+                {
+                    EmailService emailService = new EmailService();
+
+                    string nombreMostrar = string.IsNullOrWhiteSpace(usuario.Nombre) ? usuario.Email : usuario.Nombre;
+
+                    string cuerpo =
+                        "<h2>¡Bienvenido a Catálogo Tecnológico!</h2>" +
+                        "<p>Hola <b>" + nombreMostrar + "</b>,</p>" +
+                        "<p>Tu cuenta fue creada correctamente.</p>" +
+                        "<p>Ya podés iniciar sesión, guardar favoritos y administrar tu perfil.</p>" +
+                        "<br/>" +
+                        "<p>Gracias por registrarte.</p>";
+
+                    emailService.armarCorreo(usuario.Email, "Bienvenido a Catálogo Tecnológico", cuerpo);
+
+                    emailService.enviarEmail();
+                }
+                catch (Exception exEmail)
+                {
+                    System.Diagnostics.Debug.WriteLine("Error al enviar email de bienvenida: " + exEmail.Message);
+                }
+
                 mostrarMensaje("La cuenta fue creada correctamente. Será redirigido al inicio de sesión en 3 segundos...", "success");
                 limpiarFormulario();
                 redirigirAlLogin();
+
             }
             catch (Exception ex)
             {

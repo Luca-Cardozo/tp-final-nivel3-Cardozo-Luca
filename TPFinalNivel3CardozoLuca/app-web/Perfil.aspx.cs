@@ -74,6 +74,8 @@ namespace app_web
 
             bool ingresoConfirmacion = !string.IsNullOrWhiteSpace(confirmarPassword);
 
+            bool cambioPassword = ingresoPassword;
+
             if (ingresoPassword || ingresoConfirmacion)
             {
                 if (!ingresoPassword)
@@ -159,6 +161,36 @@ namespace app_web
 
                 negocio.modificarPerfil(usuarioModificado);
 
+                if (cambioPassword)
+                {
+                    try
+                    {
+                        EmailService emailService = new EmailService();
+
+                        string cuerpo =
+                            "<h2>Cambio de contraseña</h2>" +
+                            "<p>Hola " +
+                            (string.IsNullOrWhiteSpace(usuarioModificado.Nombre)
+                                ? usuarioModificado.Email
+                                : usuarioModificado.Nombre) +
+                            ",</p>" +
+                            "<p>La contraseña asociada a tu cuenta fue modificada correctamente.</p>" +
+                            "<p><strong>Fecha y hora:</strong> " +
+                            DateTime.Now.ToString("dd/MM/yyyy HH:mm") +
+                            "</p>" +
+                            "<p>Si realizaste este cambio, no es necesario que hagas nada.</p>" +
+                            "<p>Si no reconocés esta acción, cambiá tu contraseña lo antes posible.</p>";
+
+                        emailService.armarCorreo(usuarioModificado.Email, "Aviso de cambio de contraseña", cuerpo);
+
+                        emailService.enviarEmail();
+                    }
+                    catch (Exception exEmail)
+                    {
+                        System.Diagnostics.Debug.WriteLine("No se pudo enviar el correo: " + exEmail.Message);
+                    }
+                }
+
                 if (imagenAnterior != usuarioModificado.Imagen)
                 {
                     eliminarImagenPerfil(imagenAnterior);
@@ -183,6 +215,7 @@ namespace app_web
 
                 mostrarMensaje("El perfil fue modificado correctamente. Será redirigido al inicio en 3 segundos...", "success");
                 redirigirAlHome();
+
             }
             catch (Exception ex)
             {
