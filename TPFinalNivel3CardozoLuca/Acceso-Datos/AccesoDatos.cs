@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Acceso_Datos
 
         public AccesoDatos()
         {
-            conexion = new SqlConnection("server=.\\SQLEXPRESS; database=CATALOGO_WEB_DB; integrated security=true");
+            conexion = new SqlConnection(ConfigurationManager.AppSettings["CadenaConexion"]);
             comando = new SqlCommand();
         }
 
